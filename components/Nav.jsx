@@ -14,6 +14,7 @@ const Nav = () => {
   useEffect(() => {
     (async () => {
       const res = await getProviders();
+      console.log('res.google: ', res.google);
       setProviders(res);
     })();
   }, []);
@@ -28,7 +29,7 @@ const Nav = () => {
           height={30}
           className='object-contain'
         />
-        <p className='logo_text'>Promptopia</p>
+        <p className='logo_text font-normal'>PromptsSharing</p>
       </Link>
 
       {/* Desktop Navigation */}
