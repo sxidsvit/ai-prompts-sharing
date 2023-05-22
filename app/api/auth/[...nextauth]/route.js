@@ -4,13 +4,10 @@ import GoogleProvider from 'next-auth/providers/google';
 import User from '@models/user';
 import { connectToDB } from '@utils/database';
 
-console.log('process.env.GOOGLE_ID,: ', process.env.GOOGLE_ID);
-console.log('process.env.GOOGLE_CLIENT_SECRET: ', process.env.GOOGLE_CLIENT_SECRET);
-
 const handler = NextAuth({
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_ID,
+      clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     })
   ],
@@ -22,6 +19,7 @@ const handler = NextAuth({
 
       return session;
     },
+
     async signIn({ account, profile, user, credentials }) {
       try {
         await connectToDB();
@@ -31,11 +29,14 @@ const handler = NextAuth({
 
         // if not, create a new document and save user in MongoDB
         if (!userExists) {
-          await User.create({
+
+          const newUser = {
             email: profile.email,
             username: profile.name.replace(" ", "").toLowerCase(),
-            image: profile.picture,
-          });
+            image: profile.picture
+          }
+
+          await User.create(newUser);
         }
 
         return true
@@ -44,6 +45,7 @@ const handler = NextAuth({
         return false
       }
     },
+
   }
 })
 
